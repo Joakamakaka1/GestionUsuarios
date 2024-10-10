@@ -14,15 +14,15 @@ public class UserService {
 
     public User insertUser(String gmail, String password, boolean isAdmin) {
         if (gmail == null || gmail.trim().isEmpty()) {
-            throw new IllegalArgumentException("El correo no puede estar vacío");
-        }
-
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("La contraseña no puede estar vacía");
+            return null;
         }
 
         if (!UserUtils.isValidEmail(gmail)) {
-            throw new IllegalArgumentException("El formato del correo es inválido");
+            return null;
+        }
+
+        if (password == null || password.trim().isEmpty()) {
+            return null;
         }
 
         String encryptedPassword = UserUtils.encryptPassword(password);
@@ -34,16 +34,16 @@ public class UserService {
         if (gmail == null || gmail.trim().isEmpty()) {
             return null;
         }
-        return ur.getUser(gmail);
+        return ur.getUser(gmail.trim());
     }
 
     public User updateUser(User u) {
         if (u == null) {
-            throw new IllegalArgumentException("El usuario no puede ser nulo");
+            return null;
         }
 
         if (!UserUtils.isValidEmail(u.getGmail())) {
-            throw new IllegalArgumentException("El formato del correo es inválido");
+            return null;
         }
 
         return ur.updateUser(u);
@@ -51,7 +51,7 @@ public class UserService {
 
     public boolean deleteUser(String gmail) {
         if (gmail == null || gmail.trim().isEmpty()) {
-            throw new IllegalArgumentException("El correo no puede estar vacío");
+            return false;
         }
         return ur.deleteUser(gmail);
     }

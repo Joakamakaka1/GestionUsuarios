@@ -33,6 +33,7 @@ public class Main {
                 loggedIn = true;
                 currentUser = user;
                 System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + user.getGmail());
+                System.out.println("Correo ingresado: " + gmail);
             } else {
                 System.out.println("Correo o contraseña incorrectos. Intenta de nuevo.");
             }
@@ -121,7 +122,7 @@ public class Main {
 
                 case 5:
                     exit = true;
-                    System.out.println("Gracias por usar el sistema. ¡Hasta luego!");
+                    System.out.println("Gracias por usar la aplicacion. ¡Hasta luego!");
                     break;
 
                 default:

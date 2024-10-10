@@ -1,6 +1,7 @@
 package Act01.repository;
 
 import Act01.model.User;
+import Act01.utils.UserUtils;
 
 import java.util.ArrayList;
 
@@ -10,9 +11,9 @@ public class UserRepository implements UserRepositoryAPI {
 
     public UserRepository() {
         usersDB = new ArrayList<>();
-        usersDB.add(new User(1, "prueba@gmail.com", "123456", true));
-        usersDB.add(new User(2, "prueba2@gmail.com", "123456", false));
-        usersDB.add(new User(3, "prueba3@gmail.com", "123456", false));
+        usersDB.add(new User(1, "prueba@gmail.com", UserUtils.encryptPassword("123456"), true));
+        usersDB.add(new User(1, "prueba2@gmail.com", UserUtils.encryptPassword("123456"), false));
+        usersDB.add(new User(1, "prueba3@gmail.com", UserUtils.encryptPassword("123456"), false));
     }
 
     @Override
@@ -27,7 +28,7 @@ public class UserRepository implements UserRepositoryAPI {
 
     @Override
     public User getUser(String gmail) {
-        return usersDB.stream().filter(u -> u.getGmail().equals(gmail)).findFirst().orElse(null);
+        return usersDB.stream().filter(u -> u.getGmail().equalsIgnoreCase(gmail)).findFirst().orElse(null);
     }
 
     @Override
