@@ -13,6 +13,7 @@ import java.util.Scanner;
  * The type Main.
  */
 public class Main {
+    private static final Scanner sc = new Scanner(System.in);
 
     /**
      * The entry point of application.
@@ -23,7 +24,6 @@ public class Main {
         UserRepository userRepository = new UserRepository();
         UserService userService = new UserService(userRepository);
         UserController userController = new UserController(userService);
-        Scanner sc = new Scanner(System.in);
 
         User currentUser = null;
         boolean loggedIn = false;
@@ -63,73 +63,36 @@ public class Main {
 
             switch (option) {
                 case 1:
-                    System.out.print("Ingresa el correo del usuario a consultar: ");
-                    String searchEmail = sc.nextLine();
-                    Respuestas response = userController.getUser(searchEmail);
-                    if (response.getStatus() == 200) {
-                        User user = (User) response.getData();
-                        System.out.println("Usuario encontrado: ID: " + user.getId() + ", Correo: " + user.getGmail() + ", Admin: " + user.isAdmin());
-                    } else {
-                        System.out.println(response.getMessage());
-                    }
+                    getUserCase(userController);
                     break;
 
                 case 2:
-                    if (!currentUser.isAdmin()) {
+                    if (currentUser.isAdmin()) {
+                        registerUserCase(userController, currentUser);
+                    } else {
                         System.out.println("No tienes permisos para realizar esta operación.");
-                        break;
                     }
-                    System.out.print("Ingresa el correo del nuevo usuario: ");
-                    String newEmail = sc.nextLine();
-                    System.out.print("Ingresa la contraseña del nuevo usuario: ");
-                    String newPassword = sc.nextLine();
-                    System.out.print("¿El usuario será administrador? (true/false): ");
-                    boolean isAdmin = sc.nextBoolean();
-                    sc.nextLine();
-                    Respuestas createResponse = userController.insertUser(newEmail, newPassword, isAdmin, currentUser);
-                    System.out.println(createResponse.getMessage());
                     break;
 
                 case 3:
-                    if (!currentUser.isAdmin()) {
-                        System.out.println("No tienes permisos para realizar esta operación.");
-                        break;
-                    }
-                    System.out.print("Ingresa el correo del usuario a modificar: ");
-                    String modifyEmail = sc.nextLine();
-                    User userToUpdate = userService.getUser(modifyEmail);
-                    if (userToUpdate != null) {
-                        System.out.print("Ingresa el nuevo correo: ");
-                        String updatedEmail = sc.nextLine();
-                        System.out.print("Ingresa la nueva contraseña: ");
-                        String updatedPassword = sc.nextLine();
-                        System.out.print("¿El usuario seguirá siendo administrador? (true/false): ");
-                        boolean updatedAdmin = sc.nextBoolean();
-                        sc.nextLine();
-                        userToUpdate.setGmail(updatedEmail);
-                        userToUpdate.setPassword(UserUtils.encryptPassword(updatedPassword));
-                        userToUpdate.setAdmin(updatedAdmin);
-                        Respuestas updateResponse = userController.updateUser(currentUser, userToUpdate);
-                        System.out.println(updateResponse.getMessage());
+                    if (currentUser.isAdmin()) {
+                        modifyUserCase(userService, userController, currentUser);
                     } else {
-                        System.out.println("El usuario no existe.");
+                        System.out.println("No tienes permisos para realizar esta operación.");
                     }
                     break;
 
                 case 4:
-                    if (!currentUser.isAdmin()) {
+                    if (currentUser.isAdmin()) {
+                        deleteUserCase(userController, currentUser);
+                    } else {
                         System.out.println("No tienes permisos para realizar esta operación.");
-                        break;
                     }
-                    System.out.print("Ingresa el correo del usuario a eliminar: ");
-                    String deleteEmail = sc.nextLine();
-                    Respuestas deleteResponse = userController.deleteUser(currentUser, deleteEmail);
-                    System.out.println(deleteResponse.getMessage());
                     break;
 
                 case 5:
-                    exit = true;
                     System.out.println("Gracias por usar la aplicacion. ¡Hasta luego!");
+                    exit = true;
                     break;
 
                 default:
@@ -138,5 +101,63 @@ public class Main {
         }
 
         sc.close();
+    }
+
+    private static void getUserCase(UserController userController) {
+
+        System.out.print("Ingresa el correo del usuario a consultar: ");
+        String searchEmail = sc.nextLine();
+        Respuestas response = userController.getUser(searchEmail);
+        handleResponse(response);
+    }
+
+    private static void registerUserCase(UserController userController, User currentUser) {
+
+        System.out.print("Ingresa el correo del nuevo usuario: ");
+        String newEmail = sc.nextLine();
+        System.out.print("Ingresa la contraseña del nuevo usuario: ");
+        String newPassword = sc.nextLine();
+        System.out.print("¿El usuario será administrador? (true/false): ");
+        boolean isAdmin = sc.nextBoolean();
+        sc.nextLine();
+        Respuestas response = userController.insertUser(newEmail, newPassword, isAdmin, currentUser);
+        handleResponse(response);
+    }
+
+    private static void modifyUserCase(UserService userService, UserController userController, User currentUser) {
+
+        System.out.print("Ingresa el correo del usuario a modificar: ");
+        String modifyEmail = sc.nextLine();
+        User userToUpdate = userService.getUser(modifyEmail);
+        if (userToUpdate != null) {
+            System.out.print("Ingresa el nuevo correo: ");
+            String updatedEmail = sc.nextLine();
+            System.out.print("Ingresa la nueva contraseña: ");
+            String updatedPassword = sc.nextLine();
+            System.out.print("¿El usuario seguirá siendo administrador? (true/false): ");
+            boolean updatedAdmin = sc.nextBoolean();
+            sc.nextLine();
+            userToUpdate.setGmail(updatedEmail);
+            userToUpdate.setPassword(UserUtils.encryptPassword(updatedPassword));
+            userToUpdate.setAdmin(updatedAdmin);
+            Respuestas response = userController.updateUser(currentUser, userToUpdate);
+            handleResponse(response);
+        }
+    }
+
+    private static void deleteUserCase(UserController userController, User currentUser) {
+
+        System.out.print("Ingresa el correo del usuario a eliminar: ");
+        String deleteEmail = sc.nextLine();
+        Respuestas response = userController.deleteUser(currentUser, deleteEmail);
+        handleResponse(response);
+    }
+
+    private static void handleResponse(Respuestas response) {
+        if (response.getStatus() == 200 || response.getStatus() == 201) {
+            System.out.println(response.getMessage());
+        } else {
+            System.err.println(response.getMessage() + "\nIntentelo de nuevo");
+        }
     }
 }

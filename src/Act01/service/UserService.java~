@@ -37,7 +37,7 @@ public class UserService {
             return null;
         }
 
-        if (password == null || password.trim().isEmpty() || password.length() < 6 || password.length() > 20) {
+        if (password == null || password.trim().isEmpty() || password.length() < 6) {
             return null;
         }
 
