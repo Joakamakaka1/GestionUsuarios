@@ -4,7 +4,16 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * The type User utils.
+ */
 public class UserUtils {
+    /**
+     * Encrypt password string.
+     *
+     * @param password the password
+     * @return the string
+     */
     public static String encryptPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA3-256");
@@ -20,10 +29,24 @@ public class UserUtils {
         }
     }
 
+    /**
+     * Check password boolean.
+     *
+     * @param plainPassword     the plain password
+     * @param encryptedPassword the encrypted password
+     * @return the boolean
+     */
     public static boolean checkPassword(String plainPassword, String encryptedPassword) {
         String encryptedPlainPassword = encryptPassword(plainPassword);
         return encryptedPlainPassword.equals(encryptedPassword);
     }
+
+    /**
+     * Is valid email boolean.
+     *
+     * @param email the email
+     * @return the boolean
+     */
     public static boolean isValidEmail(String email) {
         String regexEmail = "^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$";
         return email != null && email.matches(regexEmail);

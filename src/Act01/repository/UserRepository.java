@@ -5,10 +5,19 @@ import Act01.utils.UserUtils;
 
 import java.util.ArrayList;
 
+/**
+ * The type User repository.
+ */
 public class UserRepository implements UserRepositoryAPI {
 
+    /**
+     * The Users db.
+     */
     ArrayList<User> usersDB;
 
+    /**
+     * Instantiates a new User repository.
+     */
     public UserRepository() {
         usersDB = new ArrayList<>();
         usersDB.add(new User(1, "prueba@gmail.com", UserUtils.encryptPassword("123456"), true));

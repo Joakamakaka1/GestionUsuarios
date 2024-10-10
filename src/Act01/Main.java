@@ -9,8 +9,16 @@ import Act01.utils.UserUtils;
 
 import java.util.Scanner;
 
+/**
+ * The type Main.
+ */
 public class Main {
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         UserRepository userRepository = new UserRepository();
         UserService userService = new UserService(userRepository);
@@ -33,7 +41,6 @@ public class Main {
                 loggedIn = true;
                 currentUser = user;
                 System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + user.getGmail());
-                System.out.println("Correo ingresado: " + gmail);
             } else {
                 System.out.println("Correo o contraseña incorrectos. Intenta de nuevo.");
             }
@@ -79,7 +86,7 @@ public class Main {
                     System.out.print("¿El usuario será administrador? (true/false): ");
                     boolean isAdmin = sc.nextBoolean();
                     sc.nextLine();
-                    Respuestas createResponse = userController.insertUser(newEmail, newPassword, isAdmin);
+                    Respuestas createResponse = userController.insertUser(newEmail, newPassword, isAdmin, currentUser);
                     System.out.println(createResponse.getMessage());
                     break;
 

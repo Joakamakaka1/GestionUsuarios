@@ -1,5 +1,8 @@
 package Act01.model;
 
+/**
+ * The type Respuestas.
+ */
 public class Respuestas {
 
     private int status;
